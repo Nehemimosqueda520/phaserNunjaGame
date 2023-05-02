@@ -21,6 +21,11 @@ export default class Game extends Phaser.Scene {
       ["Cuadrado"]: { count: 0, score: 20 },
       ["Rombo"]: { count: 0, score: 30 },
     };
+
+    this.isWinner = false;
+    this.isGameOver = false;
+
+    this.timer = 30;
   }
 
   preload() {
@@ -38,6 +43,16 @@ export default class Game extends Phaser.Scene {
     // add sky background
     this.add.image(400, 300, "sky").setScale(0.555);
 
+    // add text
+    this.scoreText = this.add.text(16, 16, "C: 0 / T: 0 / R: 0", {
+      fontSize: "20px",
+      fill: "#FDFDFD",
+    });
+
+    this.timeText = this.add.text(770, 16, this.timer, {
+      fontSize: "20px",
+      fill: "#FDFDFD",
+    })
     // agregado con fisicas
     // add sprite player
     this.player = this.physics.add.sprite(400, 500, "player");
@@ -46,6 +61,7 @@ export default class Game extends Phaser.Scene {
     // add platforms static group
     this.platformsGroup = this.physics.add.staticGroup();
     this.platformsGroup.create(400, 568, "platform").setScale(2).refreshBody();
+    this.platformsGroup.create(800, 375, "platform").setScale(2).refreshBody();
 
     // add shapes group
     this.shapesGroup = this.physics.add.group();
@@ -75,11 +91,27 @@ export default class Game extends Phaser.Scene {
       callbackScope: this,
       loop: true,
     });
+
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.addTime,
+      callbackScope: this,
+      loop: true,
+    });
+
+    
   }
 
   update() {
     // update game objects
     // check if not game over or win
+    if (this.isWinner) {
+      this.scene.start("victory");
+    }
+
+    if (this.isGameOver) {
+      this.scene.start ("gameOver");
+    }
 
     // update player left right movement
     if (this.cursors.left.isDown) {
@@ -98,13 +130,40 @@ export default class Game extends Phaser.Scene {
 
   collectShape(jugador, figuraChocada) {
     // remove shape from screen
+    const shapeName = figuraChocada.texture.key;
     console.log("figura recolectada");
     figuraChocada.disableBody(true, true);
-
-    const shapeName = figuraChocada.texture.key;
     this.shapesRecolected[shapeName].count++;
 
     console.log(this.shapesRecolected);
+
+    
+
+
+    // update score text
+
+    this.scoreText.setText(
+      `C: ${this.shapesRecolected[CUADRADO].count} / T: ${this.shapesRecolected[TRIANGULO].count} / R: ${this.shapesRecolected[ROMBO].count} `
+    );
+    //check if winner
+    //collect two of each shape
+
+    if (
+      this.shapesRecolected[CUADRADO].count >= 2 &&
+      this.shapesRecolected [TRIANGULO]. count >= 2 &&
+      this.shapesRecolected[ROMBO]. count >= 2
+     ) {
+      this.isWinner = true
+    }
+  }
+
+  addTime(){
+    this.timer -= 1;
+    this.timeText.setText(`${this.timer}`);
+    if (this.timer === 0) {
+      this.isGameOver = true;
+    }
+   
   }
 
   addShape() {

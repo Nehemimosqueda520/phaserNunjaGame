@@ -1,10 +1,11 @@
 // create enum's
 const PLAYER_MOVEMENTS = {
-  x: 160,
+  x: 300,
   y: 300,
 };
 
 const SHAPE_DELAY = 3000;
+
 
 const TRIANGULO = "Triangulo";
 const CUADRADO = "Cuadrado";
