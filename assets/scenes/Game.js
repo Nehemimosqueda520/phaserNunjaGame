@@ -41,6 +41,7 @@ export default class Game extends Phaser.Scene {
     // agregado con fisicas
     // add sprite player
     this.player = this.physics.add.sprite(400, 500, "player");
+    this.player.setCollideWorldBounds(true);
 
     // add platforms static group
     this.platformsGroup = this.physics.add.staticGroup();
