@@ -1,6 +1,6 @@
 // create enum's
 const PLAYER_MOVEMENTS = {
-  x: 160,
+  x: 300,
   y: 300,
 };
 
