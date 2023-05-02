@@ -24,6 +24,8 @@ export default class Game extends Phaser.Scene {
 
     this.isWinner = false;
     this.isGameOver = false;
+
+    this.timer = 30;
   }
 
   preload() {
@@ -47,6 +49,10 @@ export default class Game extends Phaser.Scene {
       fill: "#FDFDFD",
     });
 
+    this.timeText = this.add.text(770, 16, this.timer, {
+      fontSize: "20px",
+      fill: "#FDFDFD",
+    })
     // agregado con fisicas
     // add sprite player
     this.player = this.physics.add.sprite(400, 500, "player");
@@ -82,6 +88,13 @@ export default class Game extends Phaser.Scene {
     this.time.addEvent({
       delay: SHAPE_DELAY,
       callback: this.addShape,
+      callbackScope: this,
+      loop: true,
+    });
+
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.addTime,
       callbackScope: this,
       loop: true,
     });
@@ -124,6 +137,8 @@ export default class Game extends Phaser.Scene {
 
     console.log(this.shapesRecolected);
 
+    
+
 
     // update score text
 
@@ -140,6 +155,15 @@ export default class Game extends Phaser.Scene {
      ) {
       this.isWinner = true
     }
+  }
+
+  addTime(){
+    this.timer -= 1;
+    this.timeText.setText(`${this.timer}`);
+    if (this.timer === 0) {
+      this.isGameOver = true;
+    }
+   
   }
 
   addShape() {
