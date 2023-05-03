@@ -68,8 +68,9 @@ export default class Game extends Phaser.Scene {
 
     // add platforms static group
     this.platformsGroup = this.physics.add.staticGroup();
-   git 
-
+    this.platformsGroup.create(400, 568, "platform").setScale(2).refreshBody();
+    this.platformsGroup.create(800, 375, "platform").setScale(2).refreshBody();
+    this.platformsGroup.create(0, 175, "platform").setScale(2).refreshBody();
 
     // add shapes group
     this.shapesGroup = this.physics.add.group();
