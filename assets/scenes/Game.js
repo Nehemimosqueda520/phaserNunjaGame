@@ -6,6 +6,7 @@ import {
   TRIANGULO,
   ROMBO,
   CUADRADO,
+  BOMB,
 } from "../../utils.js";
 
 export default class Game extends Phaser.Scene {
@@ -20,6 +21,7 @@ export default class Game extends Phaser.Scene {
       ["Triangulo"]: { count: 0, score: 0 },
       ["Cuadrado"]: { count: 0, score: 0 },
       ["Rombo"]: { count: 0, score: 0 },
+      ["Bomb"]: { score: 0 },	
     };
 
     this.isWinner = false;
@@ -38,6 +40,7 @@ export default class Game extends Phaser.Scene {
     this.load.image(TRIANGULO, "./assets/images/Triangulo.png");
     this.load.image(ROMBO, "./assets/images/Rombo.png");
     this.load.image(CUADRADO, "./assets/images/Cuadrado.png");
+    this.load.image(BOMB, "./assets/images/bomb.png");
   }
 
   create() {
@@ -63,8 +66,7 @@ export default class Game extends Phaser.Scene {
     })
     // agregado con fisicas
     // add sprite player
-    this.player = this.physics.add.sprite(400, 500, "player");
-    this.player.setCollideWorldBounds(true);
+   
 
     // add platforms static group
     this.platformsGroup = this.physics.add.staticGroup();
@@ -72,16 +74,27 @@ export default class Game extends Phaser.Scene {
     this.platformsGroup.create(800, 375, "platform").setScale(2).refreshBody();
     this.platformsGroup.create(0, 175, "platform").setScale(2).refreshBody(); 
 
-
-    // add shapes group
-    this.shapesGroup = this.physics.add.group();
+    this.player = this.physics.add.sprite(400, 500, "player");
+    this.player.setCollideWorldBounds(true);
 
     // add collider between player and platforms
     this.physics.add.collider(this.player, this.platformsGroup);
+    
+    
+
+
+    // add shapes group
+    this.shapesGroup = this.physics.add.group();
+    //make the shapes bounces
+    this.physics.add.collider(this.shapesGroup, this.platformsGroup);
+    
+    
+    
+    
+
+    
 
     // add collider between platforms and shapes
-    this.physics.add.collider(this.shapesGroup, this.platformsGroup);
-
     // add overlap between player and shapes
     this.physics.add.overlap(
       this.player,
@@ -164,6 +177,12 @@ export default class Game extends Phaser.Scene {
       this.shapesRecolected[CUADRADO].score += 20;
     }
 
+    if (shapeName === BOMB && this.score > 0) {
+      this.shapesRecolected[BOMB].score -= 10;
+    }
+
+    
+    
   
     
 
@@ -177,12 +196,16 @@ export default class Game extends Phaser.Scene {
     //collect two of each shape
 
 
-    this.score = this.shapesRecolected[ROMBO].score + this.shapesRecolected[TRIANGULO]. score + this.shapesRecolected[CUADRADO]. score ;
+    this.score = this.shapesRecolected[ROMBO].score + this.shapesRecolected[TRIANGULO]. score + this.shapesRecolected[CUADRADO]. score + this.shapesRecolected[BOMB]. score;
+    
+
 
       //update scoretexts
       this.scoreTexts.setText(
         `Score: ${this.score}  `
       );
+
+    
   
       console.log(this.shapesRecolected);
   
@@ -219,4 +242,6 @@ export default class Game extends Phaser.Scene {
 
     console.log("shape is added", randomX, randomShape);
   }
+
+
 }

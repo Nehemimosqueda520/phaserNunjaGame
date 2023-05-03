@@ -7,7 +7,6 @@ export default class GameOver extends Phaser.Scene {
 
   preload() {
     this.load.image("sky", "./assets/images/Cielo.png");
-    //load platform specific
     this.load.image("platform", "./assets/images/platform.png");
     
   }
