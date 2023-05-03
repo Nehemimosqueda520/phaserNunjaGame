@@ -17,15 +17,17 @@ export default class Game extends Phaser.Scene {
 
   init() {
     this.shapesRecolected = {
-      ["Triangulo"]: { count: 0, score: 10 },
-      ["Cuadrado"]: { count: 0, score: 20 },
-      ["Rombo"]: { count: 0, score: 30 },
+      ["Triangulo"]: { count: 0, score: 0 },
+      ["Cuadrado"]: { count: 0, score: 0 },
+      ["Rombo"]: { count: 0, score: 0 },
     };
 
     this.isWinner = false;
     this.isGameOver = false;
 
     this.timer = 30;
+
+    this.score = 0;
   }
 
   preload() {
@@ -49,6 +51,12 @@ export default class Game extends Phaser.Scene {
       fill: "#FDFDFD",
     });
 
+    //add score text for this.score
+    this.scoreTexts = this.add.text(16, 50, "Score: 0", {
+      fontSize: "20px",
+      fill: "#FDFDFD",
+    });
+
     this.timeText = this.add.text(770, 16, this.timer, {
       fontSize: "20px",
       fill: "#FDFDFD",
@@ -62,6 +70,8 @@ export default class Game extends Phaser.Scene {
     this.platformsGroup = this.physics.add.staticGroup();
     this.platformsGroup.create(400, 568, "platform").setScale(2).refreshBody();
     this.platformsGroup.create(800, 375, "platform").setScale(2).refreshBody();
+    this.platformsGroup.create(0, 175, "platform").setScale(2).refreshBody();
+
 
     // add shapes group
     this.shapesGroup = this.physics.add.group();
@@ -131,12 +141,30 @@ export default class Game extends Phaser.Scene {
   collectShape(jugador, figuraChocada) {
     // remove shape from screen
     const shapeName = figuraChocada.texture.key;
+    
     console.log("figura recolectada");
     figuraChocada.disableBody(true, true);
+
+
     this.shapesRecolected[shapeName].count++;
+    
 
-    console.log(this.shapesRecolected);
+    //increment score for TRIANGULO 10
+    if (shapeName === TRIANGULO) {
+      this.shapesRecolected[TRIANGULO].score += 10;
+    }
 
+    //increment score for ROMBO 15
+    if (shapeName === ROMBO) {
+      this.shapesRecolected[ROMBO].score += 15;
+    }
+
+    //increment score for CUADRADO 20
+    if (shapeName === CUADRADO) {
+      this.shapesRecolected[CUADRADO].score += 20;
+    }
+
+  
     
 
 
@@ -148,13 +176,26 @@ export default class Game extends Phaser.Scene {
     //check if winner
     //collect two of each shape
 
+
+    this.score = this.shapesRecolected[ROMBO].score + this.shapesRecolected[TRIANGULO]. score + this.shapesRecolected[CUADRADO]. score ;
+
+      //update scoretexts
+      this.scoreTexts.setText(
+        `Score: ${this.score}  `
+      );
+  
+      console.log(this.shapesRecolected);
+  
     if (
       this.shapesRecolected[CUADRADO].count >= 2 &&
       this.shapesRecolected [TRIANGULO]. count >= 2 &&
-      this.shapesRecolected[ROMBO]. count >= 2
+      this.shapesRecolected[ROMBO]. count >= 2 &&
+      this.score >= 100
      ) {
       this.isWinner = true
     }
+
+    console.log(this.score);
   }
 
   addTime(){
