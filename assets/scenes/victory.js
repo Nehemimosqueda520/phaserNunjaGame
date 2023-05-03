@@ -7,6 +7,7 @@ export default class Victory extends Phaser.Scene {
      init() {}
 
   preload() {
+
     this.load.image("sky", "./assets/images/Cielo.png");
     //load platform
      this.load.image("platform", "./assets/images/platform.png");
