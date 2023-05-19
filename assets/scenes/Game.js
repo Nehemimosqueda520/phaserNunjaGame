@@ -84,9 +84,8 @@ export default class Game extends Phaser.Scene {
 
 
     // add shapes group
+
     this.shapesGroup = this.physics.add.group();
-    //make the shapes bounces
-    this.physics.add.collider(this.shapesGroup, this.platformsGroup);
     
     
     
@@ -122,6 +121,20 @@ export default class Game extends Phaser.Scene {
       loop: true,
     });
 
+    this.shapesGroup.children.iterate((shape) => {
+      shape.body.setBounce(1);
+      shape.score = 3; // Puntos iniciales para las formas
+    });
+  
+    // add collider between shapes and platforms
+    this.physics.add.collider(this.shapesGroup, this.platformsGroup, (shape) => {
+      shape.score -= 1;
+      console.log(shape.score); // Descontar 1 punto al rebotar con el piso
+  
+      if (shape.score <= 0) {
+        shape.disableBody(true, true); // Desaparecer si llega a 0 puntos
+      }
+    });
     
   }
 
@@ -148,7 +161,11 @@ export default class Game extends Phaser.Scene {
     // update player jump
     if (this.cursors.up.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-PLAYER_MOVEMENTS.y);
+
+     
     }
+
+    
   }
 
   collectShape(jugador, figuraChocada) {
@@ -179,6 +196,10 @@ export default class Game extends Phaser.Scene {
 
     if (shapeName === BOMB && this.score > 0) {
       this.shapesRecolected[BOMB].score -= 10;
+    }
+
+    if (shapeName === TRIANGULO || shapeName === CUADRADO || shapeName === ROMBO) {
+      this.shapesRecolected[shapeName].score -= 1;
     }
 
     
@@ -233,14 +254,15 @@ export default class Game extends Phaser.Scene {
   addShape() {
     // get random shape
     const randomShape = Phaser.Math.RND.pick(SHAPES);
-
+  
     // get random position x
     const randomX = Phaser.Math.RND.between(0, 800);
-
+  
     // add shape to screen
-    this.shapesGroup.create(randomX, 0, randomShape);
-
+    const shape = this.shapesGroup.create(randomX, 0, randomShape);
+  
     console.log("shape is added", randomX, randomShape);
+    shape.body.setBounce(0.5);
   }
 
 
