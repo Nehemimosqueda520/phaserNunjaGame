@@ -11,8 +11,6 @@ import {
 
 export default class Game extends Phaser.Scene {
   constructor() {
-    // key of the scene
-    // the key will be used to start the scene by other scenes
     super("game");
   }
 
@@ -44,8 +42,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    // create game objects
-    // add sky background
+
     this.add.image(400, 300, "sky").setScale(0.555);
 
     // add text
@@ -54,7 +51,7 @@ export default class Game extends Phaser.Scene {
       fill: "#FDFDFD",
     });
 
-    //add score text for this.score
+    //add score text 
     this.scoreTexts = this.add.text(16, 50, "Score: 0", {
       fontSize: "20px",
       fill: "#FDFDFD",
@@ -64,9 +61,8 @@ export default class Game extends Phaser.Scene {
       fontSize: "20px",
       fill: "#FDFDFD",
     })
-    // agregado con fisicas
-    // add sprite player
-   
+  
+  
 
     // add platforms static group
     this.platformsGroup = this.physics.add.staticGroup();
@@ -80,27 +76,16 @@ export default class Game extends Phaser.Scene {
     // add collider between player and platforms
     this.physics.add.collider(this.player, this.platformsGroup);
     
-    
-
-
     // add shapes group
-
     this.shapesGroup = this.physics.add.group();
     
-    
-    
-    
-
-    
-
-    // add collider between platforms and shapes
     // add overlap between player and shapes
     this.physics.add.overlap(
       this.player,
       this.shapesGroup,
-      this.collectShape, // funcion que llama cuando player choca con shape
-      null, //dejar fijo por ahora
-      this //dejar fijo por ahora
+      this.collectShape, 
+      null, 
+      this
     );
 
     // create cursors
@@ -130,7 +115,6 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.shapesGroup, this.platformsGroup, (shape) => {
       shape.score -= 1;
       console.log(shape.score); // Descontar 1 punto al rebotar con el piso
-  
       if (shape.score <= 0) {
         shape.disableBody(true, true); // Desaparecer si llega a 0 puntos
       }
@@ -138,8 +122,10 @@ export default class Game extends Phaser.Scene {
     
   }
 
+
+
   update() {
-    // update game objects
+
     // check if not game over or win
     if (this.isWinner) {
       this.scene.start("victory");
@@ -161,11 +147,7 @@ export default class Game extends Phaser.Scene {
     // update player jump
     if (this.cursors.up.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-PLAYER_MOVEMENTS.y);
-
-     
     }
-
-    
   }
 
   collectShape(jugador, figuraChocada) {
@@ -202,12 +184,6 @@ export default class Game extends Phaser.Scene {
       this.shapesRecolected[shapeName].score -= 1;
     }
 
-    
-    
-  
-    
-
-
     // update score text
 
     this.scoreText.setText(
@@ -215,7 +191,6 @@ export default class Game extends Phaser.Scene {
     );
     //check if winner
     //collect two of each shape
-
 
     this.score = this.shapesRecolected[ROMBO].score + this.shapesRecolected[TRIANGULO]. score + this.shapesRecolected[CUADRADO]. score + this.shapesRecolected[BOMB]. score;
     
@@ -235,11 +210,9 @@ export default class Game extends Phaser.Scene {
       this.shapesRecolected [TRIANGULO]. count >= 2 &&
       this.shapesRecolected[ROMBO]. count >= 2 &&
       this.score >= 100
-     ) {
+    ) {
       this.isWinner = true
     }
-
-    console.log(this.score);
   }
 
   addTime(){
@@ -248,7 +221,6 @@ export default class Game extends Phaser.Scene {
     if (this.timer === 0) {
       this.isGameOver = true;
     }
-   
   }
 
   addShape() {
